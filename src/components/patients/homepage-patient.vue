@@ -4,23 +4,25 @@
     <v-col lg="2" v-if="$vuetify.breakpoint.mdAndDown===!true" >
       <v-img class="pat" contain :src="loginData.img"></v-img>
       <v-card class="rounded-xl">
-        <v-card-title class="mt-4">Welcome: {{loginData.firstName}} {{loginData.lastName}}</v-card-title>
+        <v-card-title class="mt-4 ">Welcome: <br>{{loginData.firstName}} {{loginData.lastName}}</v-card-title>
       </v-card>
       <v-divider inset vertical></v-divider>
-      <v-card elevation="8" class="pa-1" rounded="xl" color=white>
-        <v-list>
+          <v-sheet elevation="8" class="pa-2" rounded="xl" color=white>
+        <v-list shaped>
           <v-list-item v-for="item in items" :key="item">
-            <v-list-item-content @click="redirectTo(item.routeName, userId)">
-              {{item.text}}
+            <v-list-item-content  @click="redirectTo(item.routeName, userId)">
+                <v-list-item-title>
+                  {{item.text}}
               <v-divider></v-divider>
+                </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list>
-      </v-card>
+          </v-sheet>
     </v-col>
 
     <v-col justify="center" sm="12" md="10" lg="8">
-      <v-carousel height="20vh"  hide-delimiter-background show-arrows-on-hover rounded = "lg">
+      <v-carousel height="20vh"  hide-delimiter-background show-arrows-on-hover rounded = "lg" cycle interval="5000">
         <v-carousel-item class="flex xl12" v-for="(slide, i) in slides" :key="i">
           <v-sheet :color="colors[i]" height="100%">
             <v-row class="fill-height" align="center" justify="center">
@@ -36,11 +38,12 @@
       <!-- PUBLICATIONS !-->
 
             <v-row v-for="publication in publications" :key="publication.id" class="py-4 mr-2">
-              <v-card  min-width="50vh" rounded="lg" hover @click="redirectToPublication(publication.id)" >
+              <v-card class="pb-4" min-width="50vh" rounded="lg" hover @click="redirectToPublication(publication.id)" style="width: 100%">
                 <v-row>
                   <v-col cols="12" md="4">
-                      <v-img class="mt-4 ml-3" flat height="100%" :src="publication.img"
+                      <v-img class="mt-4 ml-3" flat height="100%" :src="publication.photoUrl"
                              :aspect-ratio="16 / 9"
+                             contain
                              max-height="90%"
                       ></v-img>
                   </v-col>
@@ -79,7 +82,7 @@
         </v-card>
         <v-col  sm="4" md="2" lg="12" v-for="psychology in psychologists" :key="psychology">
           <v-card max-height="300" max-width="200" class="mx-auto mb-5" >
-            <v-img aspect-ratio="14:9" height="150" width="200" class="white--text align-end" :src="psychology.img">
+            <v-img aspect-ratio="14:9" contain height="150" width="200" class="white--text align-end" :src="psychology.image">
             </v-img>
             <v-card-subtitle class="pb-0">
               {{psychology.name}}
@@ -104,7 +107,7 @@
       <v-card>
         <v-col align="center">
           <v-avatar width="100" height="100">
-            <v-img :src="selectedPsychologist.img"></v-img>
+            <v-img :src="selectedPsychologist.image"></v-img>
           </v-avatar>
         </v-col>
         <v-card-title class="justify-center">{{ selectedPsychologist.name }}</v-card-title>
@@ -157,8 +160,8 @@ export default {
     ],
     items: [
       {text: 'Psychologists', routeName: 'dashboard_patient'},
-      {text: 'Help Center', route: '/centro de ayuda'},
-      {text: 'Guide', route: '/guia'}
+
+
     ],
     specialties: [
         'Terapias de pareja',
@@ -172,12 +175,12 @@ export default {
     try {
       const response = await PublicationsApiService.getAll();
       const response2 = await PsychologistsApiService.getAll();
-      const response3 = await PublicationsApiService.getTags();
+      //const response3 = await PublicationsApiService.getTags();
       const response4 = await PatientApiService.getById(this.userId);
       this.publications = response.data;
       this.psychologists = response2.data;
-      this.tags = response3.data;
-      console.log(this.tags);
+      //this.tags = response3.data;
+
       this.loginData = response4.data;
     }
     catch (e)

@@ -2,9 +2,9 @@
   <v-container fluid>
   <v-row>
     <v-col cols="2">
-      <v-img class="psy" contain :src="loginData.img"></v-img>
+      <v-img class="psy" contain :src="loginData.image"></v-img>
       <v-card class="rounded-xl">
-        <v-card-title class="mt-4">Welcome: {{loginData.name}}</v-card-title>
+        <v-card-title class="mt-4">Welcome: <br> {{loginData.name}}</v-card-title>
       </v-card>
       <v-spacer class="my-5"></v-spacer>
       <template>
@@ -36,8 +36,8 @@
       </v-sheet>
     </v-col>
 
-      <v-col lg="8">
-        <v-carousel height="20vh"  hide-delimiter-background show-arrows-on-hover rounded = "lg">
+      <v-col lg="10">
+        <v-carousel height="20vh"  hide-delimiter-background show-arrows-on-hover rounded = "lg" cycle interval="5000">
           <v-carousel-item class="flex xl12" v-for="(slide, i) in slides" :key="i">
             <v-sheet :color="colors[i]" height="100%">
               <v-row class="fill-height" align="center" justify="center">
@@ -72,7 +72,7 @@
                 <v-avatar size="40">
                   <img
                       alt="user"
-                      :src="publication.psychologist.img"
+                      :src="publication.psychologist.image"
                   >
                 </v-avatar>
                 <p class="ml-2 mt-4">{{publication.psychologist.name}}</p>
@@ -88,7 +88,6 @@
               </v-row>
             </v-card-text>
             <v-card-actions class="justify-end">
-              <v-btn color="white" @click="openDialogTag(publication.id)">Add Tags</v-btn>
               <v-btn color="white" @click="editChanges(publication)">Edit</v-btn>
               <v-btn color="primary" @click="deletePost(publication)">Delete</v-btn>
             </v-card-actions>
@@ -106,42 +105,13 @@
         </template>
       </v-snackbar>
 
-
-
-    <v-col lg="2">
-      <!--CARDS PSICÓLOGOS-->
-      <v-row>
-        <v-card max-width="220" class="mx-auto">
-          <v-card-title class=" text-subtitle-1 text--primary text-uppercase font-weight-bold">
-            New psychologists
-          </v-card-title>
-        </v-card>
-        <v-col  sm="4" md="2" lg="12" v-for="psychology in psychologists" :key="psychology">
-          <v-card max-height="300" max-width="200" class="mx-auto mb-5" >
-            <v-img aspect-ratio="14:9" height="150" width="200" class="white--text align-end" :src="psychology.img">
-            </v-img>
-            <v-card-subtitle class="pb-0">
-              {{psychology.name}}
-            </v-card-subtitle>
-            <v-card-text class="text--primary">
-              <div>{{ psychology.email }}</div>
-            </v-card-text>
-            <!-- BOTONES CARDS-->
-            <v-card-actions>
-              <v-btn color="primary" text @click="psychologistDialog(psychology)">More</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-col>
-
     <template>
       <!--DIALOG INFO PSICOLOGO SELECCIONADO-->
       <v-dialog v-model="dialogInfo" width="400" v-if="selectedPsychologist!=null" persistent>
         <v-card>
           <v-col align="center">
             <v-avatar width="100" height="100">
-              <v-img :src="selectedPsychologist.img"></v-img>
+              <v-img :src="selectedPsychologist.image"></v-img>
             </v-avatar>
           </v-col>
           <v-card-title class="justify-center">{{ selectedPsychologist.name }}</v-card-title>
@@ -186,8 +156,6 @@ export default {
   data: () => ({
     items: [
       {text: 'Patients', routeName:'dashboard_psycho'},
-      {text:'Help Center', routeName:'centro de ayuda'},
-      {text:'Guide', routeName:'video-call'}
     ],
     colors: [
       '#03A9F4',
@@ -296,17 +264,20 @@ export default {
         this.message = 'Llena todos los campos'
       }
       else {
-        this.defaultPublication.createdAt = this.date
-        this.defaultPublication.img = "https://www.dzoom.org.es/wp-content/uploads/2017/07/seebensee-2384369-810x540.jpg"
+        this.defaultPublication.tags = "tags"
+          this.defaultPublication.content = "content"
+
+        this.defaultPublication.photoUrl = "https://static.vecteezy.com/system/resources/previews/011/190/762/original/text-new-post-speech-bubble-hand-drawn-illustration-design-for-stickers-png.png"
         this.defaultPublication.psychologistId = this.userId
-        await PublicationsApiService.create(this.defaultPublication)
-        // this.publications.push(this.defaultPublication)
+          try {
+              await PublicationsApiService.create(this.defaultPublication, this.userId );
+              const response = await PublicationsApiService.getByPsychologistId(this.userId);
+              this.publications = response.data;
+          } catch (error) {
+              alert(error);
+          }
 
-        const response = await PublicationsApiService.getByPsychologistId(this.userId)
-        console.log(this.userId);
 
-
-        this.publications = response.data;
         //this.$forceUpdate();
        // this.retrievePublications()
         //this.closeDialog();

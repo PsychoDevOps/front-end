@@ -1,5 +1,5 @@
 <template>
-    <v-row>
+    <v-row class="mb-5">
       <v-col cols="5" class="firstCol hidden-sm-and-down" align-self="center">
         <v-img class="img ml-5 mt-16" max-height="300" max-width="800" src="https://www.enseignemoi-files.com/site/view/images/dyn-cache/pages/image/img/12/20/1427215436_122008_1200x667x0.jpg?v=2018021301"></v-img>
       </v-col>

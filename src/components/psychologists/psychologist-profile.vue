@@ -3,14 +3,7 @@
     <v-content>
       <v-container fluid>
         <v-row align="center" justify="center">
-          <v-col cols="auto">
-            <v-card max-height="400" max-width="400" elevation="10">
-              <v-img :src="profileData.img" max-height="400" max-width="400"></v-img>
-            </v-card>
-            <v-card class="mt-2" elevation="10">
-              <v-card-title class="justify-center" style="font-size:2em">{{ profileData.name }}</v-card-title>
-            </v-card>
-          </v-col>
+
           <v-col cols="12" sm="6" md="8">
             <v-card elevation="10">
               <v-card-title class="ml-5" style="font-size:2em">Perfil del psicologo</v-card-title>
@@ -19,7 +12,7 @@
                   <v-card-title class="ml-10 mr-10 mb-2">Full name</v-card-title>
                   <v-card-subtitle class="dateProfile" style="font-size:18px">{{ profileData.name }}</v-card-subtitle>
                   <v-card-title class="ml-10 mr-10 mb-2">Birthday</v-card-title>
-                  <v-card-subtitle class="dateProfile" style="font-size:18px">{{ profileData.age }}</v-card-subtitle>
+                  <v-card-subtitle class="dateProfile" style="font-size:18px">{{ profileData.birthdayDate }}</v-card-subtitle>
                   <v-card-title class="ml-10 mr-10 mb-2">DNI</v-card-title>
                   <v-card-subtitle class="dateProfile" style="font-size:18px">{{ profileData.dni }}</v-card-subtitle>
                   <v-card-title class="ml-10 mr-10 mb-2">Phone</v-card-title>
@@ -101,7 +94,7 @@
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
                           outlined dense color="blue"
-                          v-model="age"
+                          v-model="birthdayDate"
                           :error-messages="ageErrors"
                           required
                           label="Birthday date"
@@ -109,12 +102,12 @@
                           readonly
                           v-bind="attrs"
                           v-on="on"
-                          @input="$v.age.$touch()"
-                          @blur="$v.age.$touch()"
+                          @input="$v.birthdayDate.$touch()"
+                          @blur="$v.birthdayDate.$touch()"
                       ></v-text-field>
                     </template>
                     <v-date-picker
-                        v-model="age"
+                        v-model="birthdayDate"
                         :active-picker.sync="activePicker"
                         :max="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
                         min="1950-01-01"
@@ -125,7 +118,7 @@
                       outlined dense color="blue"
                       v-model="dni"
                       :error-messages="dniErrors"
-                      :counter="9"
+                      :counter="8"
                       label="DNI"
                       prepend-icon="mdi-cellphone"
                       required
@@ -134,14 +127,14 @@
                   ></v-text-field>
                   <v-text-field
                       outlined dense color="blue"
-                      v-model="img"
+                      v-model="cmp"
                       :error-messages="imgErrors"
                       :counter="6"
                       label="CMP Number"
                       prepend-icon="mdi-cellphone"
                       required
-                      @input="$v.img.$touch()"
-                      @blur="$v.img.$touch()"
+                      @input="$v.cmp.$touch()"
+                      @blur="$v.cmp.$touch()"
                   ></v-text-field>
                   <v-text-field
                       outlined dense color="blue"
@@ -328,7 +321,7 @@ export default {
       this.dialog = true;
     },
 
-    saveProfile() {
+    async saveProfile() {
       this.profileData.name = this.name;
       this.profileData.email = this.email;
       this.profileData.age = this.age;
@@ -341,7 +334,12 @@ export default {
       this.profileData.about = this.about;
       this.profileData.cmp = this.cmp;
       this.profileData.img = this.img;
-      PsychologistsApiService.update(this.profileData.id, this.profileData);
+      try{
+          await PsychologistsApiService.update(this.profileData.id, this.profileData);
+          alert("Profile updated successfully");
+      } catch (e) {
+          console.error(e);
+      }
       this.dialog = false;
     },
 

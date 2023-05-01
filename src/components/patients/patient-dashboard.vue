@@ -2,9 +2,9 @@
   <div style=";width: 100%">
     <div class="ma-2 mb-4 font-weight-medium" style="font-size:1.5rem">Tus Pacientes</div>
     <v-sheet color="white" elevation="1" height="100%" rounded width="100%">
-      <v-row align="center" justify="center">
+      <v-row>
         <v-col class="d-flex flex-wrap">
-          <v-card class="mx-auto mb-10 pb-3 justify-center" width="280" v-for="patient in patients"
+          <v-card class="mx-auto mb-10 pb-3 justify-center text-left" width="280" v-for="patient in patients"
                   :key="patient">
             <v-col align="center">
               <v-avatar class="mt-4" width="100" height="100">
@@ -44,6 +44,7 @@ export default {
     try {
       const response = await AppointmentApiService.getPatientsByPsychologistId(this.psychologistId);
       this.patients = response.data;
+      console.log(response.data)
     }
     catch (e)
     {

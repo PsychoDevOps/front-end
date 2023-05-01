@@ -1,7 +1,7 @@
 <template>
     <v-row align="center" justify="center" >
       <v-col>
-        <v-card class="elevation-6 mt-10">
+        <v-card class="elevation-6 mt-10 mb-5">
               <v-row>
                 <v-col cols="12" md="6">
                   <v-img width="100%" src="https://static.vecteezy.com/system/resources/previews/002/610/660/non_2x/woman-consulting-psychologist-vector.jpg"></v-img>

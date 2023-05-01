@@ -1,7 +1,7 @@
 <template>
   <v-row class="rowT">
     <v-col cols="5" class="firstCol hidden-sm-and-down" align-self="center">
-      <v-img class="img ml-5 mt-10" max-height="500" max-width="800" src="https://cdn.discordapp.com/attachments/839568290078392383/898701933408313375/unknown.png"></v-img>
+      <v-img class="img ml-5 mt-10" max-height="500" max-width="800" src="https://s1.eestatic.com/2019/01/18/actualidad/actualidad_369475125_112625460_1706x960.jpg"></v-img>
     </v-col>
     <v-col class="pr-lg-10 mb-5" lg="7" xs="12">
       <v-divider inset vertical></v-divider>

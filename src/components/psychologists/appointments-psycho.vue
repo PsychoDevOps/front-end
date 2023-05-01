@@ -132,6 +132,7 @@ export default {
     async retrieveAppointments(){
       const response = await AppointmentApiService.getAppointmentsByPsychologistId(this.userId);
       this.appointments = response.data;
+      console.log(response.data)
     },
 
     async cancelAppointment(appointmentId){

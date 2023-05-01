@@ -170,6 +170,7 @@ export default {
       const responseAppointment = await AppointmentApiService.getAppointmentByPatientIdAndPsychologistId(this.patientId, this.psychologistId);
       const responsePatient = await PatientApiService.getById(this.patientId);
       this.appointments = responseAppointment.data;
+      console.log(responsePatient.data)
       this.patientData = responsePatient.data;
     }
     catch (e)

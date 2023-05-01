@@ -16,13 +16,13 @@
               <v-col cols="3">
                 <h3 class="ml-4 mr-auto">
                   <v-icon class="ml-auto" color="white">mdi-account</v-icon>
-                  Psychologist: {{getPsychologistName(appointment.psychoId)}}</h3>
+                  Psychologist: {{getPsychologistName(appointment.psychologistId)}}</h3>
               </v-col>
             </v-card-text>
           </v-card>
         </v-col>
         <v-col cols="2" class="align-content-center" style="display: grid">
-          <v-btn class="mr-6" @click="psychologistDialog(appointment.psychoId, appointment.id)">Details</v-btn>
+          <v-btn class="mr-6" @click="psychologistDialog(appointment.psychologistId, appointment.id)">Details</v-btn>
         </v-col>
       </v-row>
     </v-card>
@@ -35,7 +35,7 @@
           </v-card-actions>
           <v-col align="center">
             <v-avatar width="100" height="100">
-              <v-img :src="selectedAppointment.img"></v-img>
+              <v-img :src="selectedAppointment.image"></v-img>
             </v-avatar>
           </v-col>
           <v-card-title class="justify-center">{{ selectedAppointment.name }}</v-card-title>
@@ -43,7 +43,6 @@
           <v-card-text class="text-justify">{{ selectedAppointment.email }}</v-card-text>
           <v-card-actions class="justify-center">
             <v-btn @click="joinMeet">Join</v-btn>
-            <v-btn @click="openReScheduleDialog(psychoId)">ReSchedule</v-btn>
             <v-btn @click="openCancelDialog()">Cancel</v-btn>
           </v-card-actions>
         </v-card>
@@ -258,6 +257,7 @@ export default {
 
     async retrieveAppointments(){
       const response = await AppointmentApiService.getAppointmentsByPatientId(this.userId);
+      console.log(response.data);
       this.appointments = response.data;
     },
 
@@ -279,7 +279,7 @@ export default {
       }
       else
       {
-        window.open(appointment.psychoNotes);
+        window.open(appointment.meetUrl);
       }
     }
   },

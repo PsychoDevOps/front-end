@@ -6,8 +6,8 @@ class AppointmentsApiService{
         return http.put(`/appointment/${id}`, data);
     }
 
-    createAppointment(data) {
-        return http.post("/appointment", data);
+    createAppointment(data, patientId, psychoId) {
+        return http.post(`/appointment/patient/${patientId}/psychologist/${psychoId}`, data);
     }
 
     getAppointmentId(id) {
@@ -15,7 +15,7 @@ class AppointmentsApiService{
     }
 
     getPatientsByPsychologistId(psychoId) {
-        return http.get(`/appointment/psychologist/${psychoId}`);
+        return http.get(`/appointment/psychologist/${psychoId}/patient`);
     }
 
     getAppointmentByPatientIdAndPsychologistId(patientId, psychoId) {
@@ -23,11 +23,11 @@ class AppointmentsApiService{
     }
 
     getAppointmentsByPsychologistId(psychoId) {
-        return http.get(`/appointment/psychologists/${psychoId}`);
+        return http.get(`/appointment/psychologist/${psychoId}`);
     }
 
     getAppointmentsByPatientId(patientId) {
-        return http.get(`/appointment/patients/${patientId}`);
+        return http.get(`/appointment/patient/${patientId}`);
     }
 
     deleteAppointment(id) {

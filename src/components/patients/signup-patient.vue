@@ -1,7 +1,7 @@
 <template>
   <v-row align="center" justify="center" >
     <v-col>
-      <v-card class="elevation-6 mt-5">
+      <v-card class="elevation-6 mt-5 mb-5">
         <v-row>
           <v-col cols="12" md="6">
             <v-img width="100%" src="https://static.vecteezy.com/system/resources/previews/002/610/660/non_2x/woman-consulting-psychologist-vector.jpg"></v-img>
@@ -287,7 +287,10 @@ export default {
           });
     },
 
-    register () {
+    async register () {
+        if (this.$v.$invalid){
+            alert("Ingrese los datos correctamente")
+        }
       this.patients=({
         id: this.id,
         firstName: this.firstName,
@@ -308,10 +311,15 @@ export default {
       this.phone=''
       this.date=''
       this.gender=''
-      PatientApiService.create(this.patients)
-      console.log(this.data)
-      alert("Success Register")
-      this.$router.push({name: 'Login-Patient'});
+      let patient = await PatientApiService.create(this.patients)
+        if(patient.status === 200){
+            alert("Registro exitoso")
+            this.$router.push({name: 'login-patient'})
+        }
+        else{
+            alert("Registro fallido")
+            return;
+        }
     },
 
     submit () {

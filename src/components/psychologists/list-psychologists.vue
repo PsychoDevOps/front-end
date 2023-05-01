@@ -8,9 +8,6 @@
               <v-flex xs12 sm12>
                 <v-card>
                   <v-card-title class="text-lg-subtitle-2">Do you already have a psychologist? Look it up by their name.</v-card-title>
-                  <v-card-actions>
-                    <v-text-field v-model="search" label="Search Name" outlined v-on:input="getPsychologistByName()"></v-text-field>
-                  </v-card-actions>
                   <v-card-title>Filter by</v-card-title>
                   <v-divider></v-divider>
                   <v-card-title class="text-lg-subtitle-1">Genre</v-card-title>
@@ -49,7 +46,7 @@
                 <v-card min-height="350" class="mx-auto">
                   <v-col align="center">
                     <v-avatar width="100" height="100">
-                      <v-img :src="psychologist.img"></v-img>
+                      <v-img :src="psychologist.image"></v-img>
                     </v-avatar>
                   </v-col>
                   <v-card-title class="justify-center font-weight-bold text-lg-h6">{{psychologist.name}}</v-card-title>
@@ -81,7 +78,7 @@
         <v-card>
           <v-col align="center">
             <v-avatar width="100" height="100">
-              <v-img :src="selectedPsychologist.img"></v-img>
+              <v-img :src="selectedPsychologist.image"></v-img>
             </v-avatar>
           </v-col>
           <v-card-title class="justify-center">{{ selectedPsychologist.name }}</v-card-title>
@@ -165,7 +162,7 @@
                   <v-card-subtitle class="text-center">Turno mañana</v-card-subtitle>
                   <v-chip-group active-class="primary--text" column class="ml-7">
                     <div v-for="schedule in schedules" :key="schedule" >
-                      <v-chip v-if="schedule.id < 6" @click="scheduleDialog(schedule)">
+                      <v-chip v-if="schedule.id < 3" @click="scheduleDialog(schedule)">
                         {{ schedule.time }}
                       </v-chip>
                     </div>
@@ -177,7 +174,7 @@
                   <v-card-subtitle class="text-center">Turno Tarde</v-card-subtitle>
                   <v-chip-group  active-class="primary--text" column class="ml-7">
                     <div v-for="schedule in schedules" :key="schedule" class="align-center" >
-                      <v-chip  v-if="schedule.id >= 6" @click="scheduleDialog(schedule)">
+                      <v-chip  v-if="schedule.id >= 3" @click="scheduleDialog(schedule)">
                         {{ schedule.time }}
                       </v-chip>
                     </div>
@@ -201,7 +198,7 @@
           <v-card-subtitle class="text-left text-subtitle-1 text--primary text-uppercase font-weight-bold">Teléfono: {{loginData.phone}}</v-card-subtitle>
           <v-card-subtitle class="text-left text-subtitle-1 text--primary text-uppercase font-weight-bold">E-mail: {{loginData.email}}</v-card-subtitle>
           <v-card-actions>
-            <v-btn block color="primary" rounded @click="openPaymentDialog(dateApp, selectedSchedule.time, selectedAppointment.id, loginData.id)">Agendar cita</v-btn>
+            <v-btn block color="primary" rounded @click="handleSubmit(loginData.id, selectedAppointment.id, dateApp, selectedSchedule.time)">Agendar cita</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -314,15 +311,25 @@ export default {
       });
     },
 
-    retrievePsychoSchedules(id) {
-      PsychologistsApiService.getScheduleFromPsycho(id)
-          .then(response => {
-            this.schedules = response.data;
-            console.log(response.data);
-          })
-          .catch(e => {
-            console.log(e);
-          });
+    retrievePsychoSchedules() {
+        this.schedules = [
+            {
+                id: 1,
+                time: '08:00'
+            },
+            {
+                id: 2,
+                time: '11:00'
+            },
+            {
+                id: 3,
+                time: '15:00'
+            },
+            {
+                id: 4,
+                time: '18:00'
+            }
+        ]
     },
 
     psychologistDialog(psychologist){
@@ -419,45 +426,19 @@ export default {
     },
 
     async handleSubmit(patientId, psychoId, dateTime, dateHour) {
-      let dateToIso = new Date(dateTime + " " + dateHour);
-      let createdAt = new Date().toISOString();
+        console.log(dateHour)
+      let dateToIso = new Date(dateTime + " " + dateHour + " GMT");
       console.log(dateToIso.toISOString());
       let newAppointment = {
-        patientId: patientId,
-        psychoId: psychoId,
-        psychoNotes: "Notes",
-        scheduleDate: dateToIso,
-        createdAt: createdAt,
+        scheduleDate: dateToIso.toISOString(),
         motive: "Motive",
         personalHistory: "Personal History",
         testRealized: "Test Realized",
         treatment: "Treatment",
+          meetUrl: "https://meet.jit.si/MyMeetingTest",
       };
-      await AppointmentAppointmentService.createAppointment(newAppointment);
-      const cardElement = this.elements.getElement("card");
-      try {
-        const response = await fetch("https://stripe-psychohelp.mybluemix.net/stripe", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ amount: 5000 })
-        });
-        const { secret } = await response.json();
-        console.log("secret", secret);
-        const paymentMethodReq = await this.stripe.createPaymentMethod({
-          type: "card",
-          card: cardElement,
-        });
-        console.log("error?", paymentMethodReq);
-        const { error } = await this.stripe.confirmCardPayment(secret, {
-          payment_method: paymentMethodReq.paymentMethod.id
-        });
-        console.log("error?", error);
-        // await this.$router.push({name: 'home'});
-      } catch (error) {
-        console.log("error", error);
-      }
+      console.log(newAppointment);
+      await AppointmentAppointmentService.createAppointment(newAppointment, patientId, psychoId);
       await this.$router.push({name: 'home-patient', params: {id: this.loginData.id}});
     },
 
