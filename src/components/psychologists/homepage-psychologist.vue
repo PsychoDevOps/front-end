@@ -225,15 +225,6 @@ export default {
        .catch(e=>{
         console.log(e);
        });
-
-       PublicationsApiService.getTags()
-           .then(response => {
-             this.tags = response.data;
-             console.log(response.data);
-           })
-           .catch(e=>{
-             console.log(e);
-           });
     },
 
     retrievePsychologists(){
@@ -268,7 +259,7 @@ export default {
           this.defaultPublication.content = "content"
 
         this.defaultPublication.photoUrl = "https://static.vecteezy.com/system/resources/previews/011/190/762/original/text-new-post-speech-bubble-hand-drawn-illustration-design-for-stickers-png.png"
-        this.defaultPublication.psychologistId = this.userId
+
           try {
               await PublicationsApiService.create(this.defaultPublication, this.userId );
               const response = await PublicationsApiService.getByPsychologistId(this.userId);

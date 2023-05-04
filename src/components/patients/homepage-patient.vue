@@ -160,8 +160,6 @@ export default {
     ],
     items: [
       {text: 'Psychologists', routeName: 'dashboard_patient'},
-
-
     ],
     specialties: [
         'Terapias de pareja',

@@ -102,7 +102,7 @@ export default {
           alert("Incorrect Password")
         }
       } catch (e) {
-        console.error(e)
+        console.error("The email or the password are incorrect")
       }
     }
   }

@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "psychohelp-2021"
-  }
+    "default": "psychohelp-488a9",
+    "psychohelp": "psychohelp-488a9"
+  },
+  "targets": {},
+  "etags": {}
 }

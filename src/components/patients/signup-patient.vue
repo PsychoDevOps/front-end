@@ -290,6 +290,7 @@ export default {
     async register () {
         if (this.$v.$invalid){
             alert("Ingrese los datos correctamente")
+            return;
         }
       this.patients=({
         id: this.id,
@@ -303,18 +304,19 @@ export default {
         gender: this.gender,
         img: "https://www.logolynx.com/images/logolynx/4b/4beebce89d681837ba2f4105ce43afac.png"
       })
-      this.firstName= ''
-      this.lastName=''
-      this.email=''
-      this.password=''
-      this.state=''
-      this.phone=''
-      this.date=''
-      this.gender=''
+
       let patient = await PatientApiService.create(this.patients)
         if(patient.status === 200){
             alert("Registro exitoso")
-            this.$router.push({name: 'login-patient'})
+            this.firstName= ''
+            this.lastName=''
+            this.email=''
+            this.password=''
+            this.state=''
+            this.phone=''
+            this.date=''
+            this.gender=''
+            this.$router.push({name: 'Login-Patient'})
         }
         else{
             alert("Registro fallido")

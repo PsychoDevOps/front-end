@@ -167,7 +167,7 @@ export default {
   },
 
   methods: {
-    register() {
+    async register() {
       if (this.$v.$invalid){
         alert("Ingrese los datos correctamente")
         this.$v.$touch()
@@ -178,6 +178,7 @@ export default {
           name: this.name,
           dni: this.dni,
           age: "age",
+          birthdayDate: "1990-19-04",
           email: this.email,
           phone: this.phone,
           cmp: this.cmp,
@@ -185,14 +186,21 @@ export default {
           formation: "formation",
           about: "about",
           active: this.active,
-          img: "imagenurl",
+          image: "https://www.logolynx.com/images/logolynx/4b/4beebce89d681837ba2f4105ce43afac.png",
           new: this.new,
-          sessionType: "tgrue",
+          sessionType: "true",
           password: this.password,
-          genre : this.genre,}
-        PsychologistsApiService.create(psychologistObject)
-        alert("Registrado correctamente")
-        this.$router.push({name: 'psychologist-login'})
+          genre : this.genre,
+          fresh: false
+          }
+
+          try {
+              await PsychologistsApiService.create(psychologistObject)
+              alert("Register successful")
+              this.$router.push({name: 'psychologist-login'})
+          } catch (e) {
+            alert("Register failed")
+          }
       }
     }
   }
