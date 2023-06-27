@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
   <v-row>
-    <v-col lg="2" v-if="$vuetify.breakpoint.mdAndDown===!true" >
+    <v-col lg="2" md="2" sm="2">
       <v-img class="pat" contain :src="loginData.img"></v-img>
       <v-card class="rounded-xl">
         <v-card-title class="mt-4 ">Welcome: <br>{{loginData.firstName}} {{loginData.lastName}}</v-card-title>
@@ -19,9 +19,11 @@
           </v-list-item>
         </v-list>
           </v-sheet>
+      <v-divider inset vertical></v-divider>
+      <v-btn color="red" class="mt-6" style="width: 100%" @click="openPanicDialog()">Panic button</v-btn>
     </v-col>
 
-    <v-col justify="center" sm="12" md="10" lg="8">
+    <v-col justify="center" sm="8" md="8" lg="8">
       <v-carousel height="20vh"  hide-delimiter-background show-arrows-on-hover rounded = "lg" cycle interval="5000">
         <v-carousel-item class="flex xl12" v-for="(slide, i) in slides" :key="i">
           <v-sheet :color="colors[i]" height="100%">
@@ -72,7 +74,7 @@
               </v-card>
             </v-row>
     </v-col>
-    <v-col sm="" lg="2">
+    <v-col sm="2" md="2" lg="2">
       <!--CARDS PSICÓLOGOS-->
       <v-row>
         <v-card max-width="220" class="mx-auto">
@@ -80,7 +82,7 @@
             New psychologists
           </v-card-title>
         </v-card>
-        <v-col  sm="4" md="2" lg="12" v-for="psychology in psychologists" :key="psychology">
+        <v-col  sm="12" md="12" lg="12" v-for="psychology in psychologists" :key="psychology">
           <v-card max-height="300" max-width="200" class="mx-auto mb-5" >
             <v-img aspect-ratio="14:9" contain height="150" width="200" class="white--text align-end" :src="psychology.image">
             </v-img>
@@ -101,7 +103,6 @@
     </v-col>
   </v-row>
 
-  <template>
     <!--DIALOG INFO PSICOLOGO SELECCIONADO-->
     <v-dialog v-model="dialog" width="400" v-if="selectedPsychologist!=null" persistent>
       <v-card>
@@ -124,8 +125,15 @@
         </v-container>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-model="panicDialog" width="600">
+      <v-card class="d-flex flex-column justify-center">
+        <v-card-title>Keep calm! A psychologist will arrive soon. Please click the button to enter to the meet: </v-card-title>
+        <v-btn  color="primary" @click="openMeet">Enter meet</v-btn>
+        <v-btn  color="red" @click="cancelPanicDialog">Cancel</v-btn>
+      </v-card>
+    </v-dialog>
     <!--Fin del Dialog-->
-  </template>
 
   </v-container>
 </template>
@@ -146,6 +154,7 @@ export default {
     tags: [],
     userId: 0,
     dialog: false,
+    panicDialog: false,
     selectedPsychologist: null,
     colors: [
       '#03A9F4',
@@ -196,6 +205,16 @@ export default {
       return PublicationsApiService.getTags();
     },
 
+    async openPanicDialog() {
+      this.panicDialog = true
+      await PatientApiService.patchPanic(this.userId, {panic: true})
+    },
+
+    async cancelPanicDialog() {
+      this.panicDialog = false
+      await PatientApiService.patchPanic(this.userId, {panic: false})
+    },
+
     psychologistDialog(psychologist){
       console.log('psychologistDialog psychologist:', psychologist);
       this.selectedPsychologist = psychologist;
@@ -204,6 +223,10 @@ export default {
 
     redirectTo(router, id) {
       this.$router.push({name: router, params:{id: id}})
+    },
+
+    openMeet() {
+      window.open('https://meet.google.com/ztk-spoc-yyj', '_blank');
     }
   }
 }

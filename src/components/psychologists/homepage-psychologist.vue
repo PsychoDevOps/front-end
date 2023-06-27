@@ -9,6 +9,7 @@
       <v-spacer class="my-5"></v-spacer>
       <template>
         <v-btn block color="primary" rounded @click="openDialog()">New Post</v-btn>
+        <v-btn block color="primary" class="mt-4" rounded @click="openPanicPatientDialog()">Panic patients</v-btn>
         <v-dialog v-model="dialog" max-width="800px">
           <v-flex class="mx-auto" v-if="formAdd">
             <v-card class="mb-3 pa-3">
@@ -19,6 +20,28 @@
               </v-form>
             </v-card>
           </v-flex>
+        </v-dialog>
+        <v-dialog v-model="panicPatientDialog" max-width="800px">
+          <v-list shaped >
+          <v-list-item v-for="item in panicPatients" :key="item.text">
+            <v-list-item-content >
+              <v-list-item-title>
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                  <div style="display: flex; flex-direction: row; gap: 5px; justify-content: space-between; width: 100%;">
+                    <div>
+                      <p>Nombres y apellidos: {{item.firstName}} {{item.lastName}} </p>
+                      <p>Fecha de nacimiento: {{item.date}} </p>
+                    </div>
+                    <v-img style="border-radius: 50%; height: 75px; width: 75px;" contain :src="item.img"></v-img>
+                  </div>
+
+                  <v-btn color="primary" @click="openMeet(item.id)">Enter meet</v-btn>
+                  <v-divider></v-divider>
+                </div>
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
         </v-dialog>
       </template>
       <v-divider inset vertical class="mx-4"></v-divider>
@@ -150,6 +173,7 @@
 
 import PublicationsApiService from "../../core/services/publications-api-service"
 import PsychologistsApiService from "../../core/services/psychologists-api.service"
+import PatientApiService from "@/core/services/patient-api-service";
 
 export default {
   name: "homepage-psychologist",
@@ -169,6 +193,7 @@ export default {
     psychologists: [],
     loginData: [],
     tags: [],
+    panicPatients: [],
     snackbar: false,
     message: '',
     formAdd: true,
@@ -176,6 +201,7 @@ export default {
     dialog: false,
     dialogInfo: false,
     dialogTag: false,
+    panicPatientDialog: false,
     selectedPsychologist: null,
 
     date: new Date().toISOString(),
@@ -211,10 +237,21 @@ export default {
     this.userId = this.$route.params.id;
     this.retrievePublications();
     this.retrievePsychologists();
+    this.retrievePanicPatients();
   },
 
 
   methods: {
+    retrievePanicPatients(){
+      PatientApiService.getAllPanicPatients()
+          .then(response => {
+            this.panicPatients = response.data;
+            console.log(response.data);
+          })
+          .catch(e=>{
+            console.log(e);
+          });
+    },
 
      retrievePublications(){
       PublicationsApiService.getByPsychologistId(this.userId)
@@ -282,6 +319,10 @@ export default {
        this.dialog = true;
     },
 
+    openPanicPatientDialog() {
+      this.panicPatientDialog = true;
+    },
+
     closeDialog(){
       this.dialog = false;
     },
@@ -329,6 +370,11 @@ export default {
 
     redirectTo(router, id) {
       this.$router.push({name: router, params:{id: id}})
+    },
+
+   async openMeet(id) {
+      await PatientApiService.patchPanic(id, {panic: false})
+      window.open('https://meet.google.com/ztk-spoc-yyj', '_blank');
     }
 
   }

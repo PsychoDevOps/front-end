@@ -16,6 +16,14 @@ class PatientApiService{
         return http.put(`/patients/${id}`, data);
     }
 
+    patchPanic(id, data) {
+        return http.patch(`/patients/panic/${id}`, data)
+    }
+
+    getAllPanicPatients() {
+        return http.get("/patients/panic")
+    }
+
     delete(id) {
         return http.delete(`/patients/${id}`);
     }
